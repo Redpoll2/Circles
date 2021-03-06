@@ -8,7 +8,7 @@ namespace Circles.Replays
     public struct DataFrame
     {
         /// <summary>
-        /// Time in milliseconds since the previous action
+        /// Time in milliseconds since the previous action.
         /// </summary>
         public int Time { get; set; }
 
@@ -23,7 +23,7 @@ namespace Circles.Replays
         public float Y { get; set; }
 
         /// <summary>
-        /// Bitwise combination of keys/mouse buttons pressed
+        /// Bitwise combination of keys/mouse buttons pressed.
         /// </summary>
         public Actions Actions { get; set; }
 
