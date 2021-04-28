@@ -1,13 +1,12 @@
 ﻿// Copyright (c) 2021 02Redpoll. See the MIT license for full information
 
 using Circles.Rulesets;
+using Circles.Utils;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
-
-using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
 
 namespace Circles.Replays
 {
@@ -40,7 +39,7 @@ namespace Circles.Replays
         /// </summary>
         public void Load(string filename, bool fullLoad = false)
         {
-            var reader = new BinaryReader(new FileStream(filename, FileMode.Open, FileAccess.Read));
+            var reader = new OsuBinaryReader(new FileStream(filename, FileMode.Open, FileAccess.Read));
 
             try
             {
@@ -57,7 +56,7 @@ namespace Circles.Replays
         /// </summary>
         public void Load(Stream inStream, bool fullLoad = false)
         {
-            var reader = new BinaryReader(inStream);
+            var reader = new OsuBinaryReader(inStream);
 
             try
             {
@@ -72,13 +71,13 @@ namespace Circles.Replays
         /// <summary>
         /// Loads osu! replay from specified <see cref="BinaryReader"/>.
         /// </summary>
-        public void Load(BinaryReader reader, bool fullLoad = false)
+        public void Load(OsuBinaryReader reader, bool fullLoad = false)
         {
             Ruleset = (Ruleset)reader.ReadByte();
             Version = reader.ReadInt32();
-            BeatmapHash = reader.ReadByte() == 0x0B ? reader.ReadString() : null;
-            Username = reader.ReadByte() == 0x0B ? reader.ReadString() : null;
-            Hash = reader.ReadByte() == 0x0B ? reader.ReadString() : null;
+            BeatmapHash = reader.ReadString();
+            Username = reader.ReadString();
+            Hash = reader.ReadString();
             Count300 = reader.ReadUInt16();
             Count100 = reader.ReadUInt16();
             Count50 = reader.ReadUInt16();
@@ -92,7 +91,7 @@ namespace Circles.Replays
 
             if (fullLoad)
             {
-                string lifedata = reader.ReadByte() == 0x0B ? reader.ReadString() : null;
+                string lifedata = reader.ReadString();
 
                 if (!string.IsNullOrEmpty(lifedata))
                 {
@@ -122,7 +121,7 @@ namespace Circles.Replays
             {
                 var frames = new List<DataFrame>();
 
-                foreach (string frame in Encoding.UTF8.GetString(LzmaDecoder.Decompress(reader.ReadBytes(reader.ReadInt32()))).Split(','))
+                foreach (string frame in Encoding.UTF8.GetString(LzmaUtils.Decompress(reader.ReadBytes(reader.ReadInt32()))).Split(','))
                 {
                     if (string.IsNullOrEmpty(frame))
                     {
