@@ -89,10 +89,10 @@ namespace Circles.Replays
             IsPerfect = reader.ReadBoolean();
             Mods = (Mods)reader.ReadInt32();
 
+            string lifedata = reader.ReadString();
+
             if (fullLoad)
             {
-                string lifedata = reader.ReadString();
-
                 if (!string.IsNullOrEmpty(lifedata))
                 {
                     var frames = new List<LifebarFrame>();
