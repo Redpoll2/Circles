@@ -5,44 +5,9 @@ using System;
 namespace SevenZip.Compression.LZMA
 {
 	using RangeCoder;
-    using System.IO;
 
     public class Decoder : ICoder, ISetDecoderProperties // ,System.IO.Stream
 	{
-		public static byte[] Decompress(byte[] encodedBytes)
-        {
-			var decoder = new Decoder();
-			var properties = new byte[5];
-
-			var encodedStream = new MemoryStream(encodedBytes);
-			var decodedStream = new MemoryStream();
-
-			if (encodedStream.Read(properties, 0, 5) != 5)
-			{
-				throw new Exception("Input .lzma is too short");
-			}
-
-			decoder.SetDecoderProperties(properties);
-
-			long size = 0;
-
-			for (int i = 0; i < 8; i++)
-			{
-				int @byte = encodedStream.ReadByte();
-
-				if (@byte == -1)
-				{
-					break;
-				}
-
-				size |= ((long)(byte)@byte) << (8 * i);
-			}
-
-			decoder.Code(encodedStream, decodedStream, encodedStream.Length - encodedStream.Position, size, null);
-
-			return decodedStream.ToArray();
-		}
-
 		class LenDecoder
 		{
 			BitDecoder m_Choice = new BitDecoder();
